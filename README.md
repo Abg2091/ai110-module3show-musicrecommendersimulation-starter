@@ -19,13 +19,26 @@ Replace this paragraph with your own summary of what your version does.
 
 Explain your design in plain language.
 
+Real-world music apps like Spotify don't actually know what user want. They watch what you've listened to before, compare it against millions of other songs, and guess based on patterns. My design works the same basic way, just much smaller and completely see-through. Instead of learning from years of history, it takes a quick snapshot of what user is in the mood for right now and does the matching math.
+
 Some prompts to answer:
 
 - What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
+
+Each Song carries four traits/features that matter for matching: "genre" (the broad style, like pop or lofi), "mood" (the vibe, like happy or chill), "energy" (how intense it feels, from calm to high-energy), and "acousticness" (how stripped-down/acoustic vs. produced it sounds). Two other columns exist in the data i.e. "tempo_bpm" and "danceability" which aren't used, because in this catalog they basically move in step with "energy"; including them would just count the same thing twice.
+
+  
 - What information does your `UserProfile` store
+
+The "UserProfile" isn't a listening history rather it's a one-time snapshot of what user want right now: "favorite_genre", "mood", a "target_energy" the user is aiming for, and whether the user likes "acoustic" sounds.
+
 - How does your `Recommender` compute a score for each song
+
+To score a song, the "Recommender" adds up points for every way it matches what the user asked for, but not all matches count equally. Mood and energy are weighted the heaviest on purpose, because my philosophy is to match user's mood in the moment, not lock onto a fixed identity like "you are a pop fan." Genre mostly breaks ties between songs that already feel right.
+
 - How do you choose which songs to recommend
+
+A single score means nothing on its own. It only matters compared to every other song's score, which is why scoring one song and ranking the whole list are two separate steps, and together will be used to recommend a song.
 
 You can include a simple diagram or bullet list if helpful.
 
