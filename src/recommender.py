@@ -159,6 +159,7 @@ def load_songs(csv_path: str) -> List[Dict]:
             for field in numeric_fields:
                 row[field] = float(row[field])
             songs.append(row)
+        print(f"Loaded {len(songs)} songs from {csv_path}.")
         return songs
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
