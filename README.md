@@ -98,15 +98,42 @@ You can add more tests in `tests/test_recommender.py`.
 ## Sample Recommendation Output
 
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
+Terminal Ouput: 
 
-```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
-```
+```````````````````````````````````````````````````````````
+
+User Profile
+========================================
+genre: lofi
+mood: chill
+energy: 0.6
+likes_acoustic: True
+
+Top 5 Recommendations
+========================================
+
+1. Library Rain (Paper Lanterns) - Score: 4.99
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+2. Midnight Coding (LoRoom) - Score: 4.94
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+3. Spacewalk Thoughts (Orbit Bloom) - Score: 3.94
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+4. Focus Flow (LoRoom) - Score: 2.98
+   - genre 'lofi' matches your favorite
+   - acoustic level fits your preference
+
+5. Dirt Road Sunrise (Hazel County) - Score: 2.07
+   - energy (0.62) is close to your target (0.60)
+
+`````````````````````````````````````````````````````````````````````````````
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
