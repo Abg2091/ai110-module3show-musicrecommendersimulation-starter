@@ -1,4 +1,4 @@
-from src.recommender import Song, UserProfile, Recommender
+from src.recommender import Song, UserProfile, Recommender, _score_song
 
 def make_small_recommender() -> Recommender:
     songs = [
@@ -59,3 +59,152 @@ def test_explain_recommendation_returns_non_empty_string():
     explanation = rec.explain_recommendation(user, song)
     assert isinstance(explanation, str)
     assert explanation.strip() != ""
+
+
+def test_conflicting_mood_and_energy_scores_without_crashing():
+    # One song matches mood but not energy; the other matches energy but not mood.
+    songs = [
+        Song(
+            id=1,
+            title="Mood Match, Wrong Energy",
+            artist="Artist A",
+            genre="classical",
+            mood="melancholic",
+            energy=0.2,
+            tempo_bpm=60,
+            valence=0.2,
+            danceability=0.2,
+            acousticness=0.9,
+        ),
+        Song(
+            id=2,
+            title="Energy Match, Wrong Mood",
+            artist="Artist B",
+            genre="classical",
+            mood="triumphant",
+            energy=0.9,
+            tempo_bpm=140,
+            valence=0.8,
+            danceability=0.7,
+            acousticness=0.1,
+        ),
+    ]
+    user = UserProfile(
+        favorite_genre="classical",
+        favorite_mood="melancholic",
+        target_energy=0.9,
+        likes_acoustic=True,
+    )
+    rec = Recommender(songs)
+
+    results = rec.recommend(user, k=2)
+
+    assert len(results) == 2
+    for song in results:
+        explanation = rec.explain_recommendation(user, song)
+        assert explanation.strip() != ""
+
+
+def test_unmatched_genre_and_mood_falls_back_to_closest_match():
+    rec = make_small_recommender()
+    # target_energy=0.55 keeps energy_closeness at or below 0.85 for both fixture
+    # songs (0.75 and 0.85), and likes_acoustic=None disables the acoustic bonus,
+    # so no partial-match reason can fire for either song.
+    user = UserProfile(
+        favorite_genre="opera",
+        favorite_mood="furious",
+        target_energy=0.55,
+        likes_acoustic=None,
+    )
+
+    results = rec.recommend(user, k=2)
+
+    assert len(results) == 2
+    for song in results:
+        explanation = rec.explain_recommendation(user, song)
+        assert "closest overall match available" in explanation
+
+
+def test_out_of_range_target_energy_does_not_raise():
+    rec = make_small_recommender()
+    user = UserProfile(
+        favorite_genre="pop",
+        favorite_mood="happy",
+        target_energy=1.5,
+        likes_acoustic=False,
+    )
+
+    results = rec.recommend(user, k=2)
+
+    assert len(results) == 2
+
+
+def test_genre_and_mood_matching_is_case_and_whitespace_insensitive():
+    rec = make_small_recommender()
+    song = rec.songs[0]  # genre="pop", mood="happy"
+
+    messy_user = UserProfile(
+        favorite_genre="  PoP ",
+        favorite_mood="HAPPY",
+        target_energy=0.8,
+        likes_acoustic=False,
+    )
+    clean_user = UserProfile(
+        favorite_genre="pop",
+        favorite_mood="happy",
+        target_energy=0.8,
+        likes_acoustic=False,
+    )
+
+    messy_score, _ = _score_song(
+        song.genre, song.mood, song.energy, song.acousticness,
+        messy_user.favorite_genre, messy_user.favorite_mood,
+        messy_user.target_energy, messy_user.likes_acoustic,
+    )
+    clean_score, _ = _score_song(
+        song.genre, song.mood, song.energy, song.acousticness,
+        clean_user.favorite_genre, clean_user.favorite_mood,
+        clean_user.target_energy, clean_user.likes_acoustic,
+    )
+
+    assert messy_score == clean_score
+
+
+def test_diversity_cap_limits_songs_per_artist():
+    songs = [
+        Song(id=1, title="Same Artist 1", artist="Repeat Offender", genre="pop", mood="happy",
+             energy=0.8, tempo_bpm=120, valence=0.8, danceability=0.8, acousticness=0.1),
+        Song(id=2, title="Same Artist 2", artist="Repeat Offender", genre="pop", mood="happy",
+             energy=0.8, tempo_bpm=120, valence=0.8, danceability=0.8, acousticness=0.1),
+        Song(id=3, title="Same Artist 3", artist="Repeat Offender", genre="pop", mood="happy",
+             energy=0.8, tempo_bpm=120, valence=0.8, danceability=0.8, acousticness=0.1),
+        Song(id=4, title="Different Artist", artist="Someone Else", genre="pop", mood="happy",
+             energy=0.8, tempo_bpm=120, valence=0.8, danceability=0.8, acousticness=0.1),
+    ]
+    user = UserProfile(
+        favorite_genre="pop",
+        favorite_mood="happy",
+        target_energy=0.8,
+        likes_acoustic=False,
+    )
+    rec = Recommender(songs)
+
+    results = rec.recommend(user, k=3)
+
+    repeat_offender_count = sum(1 for song in results if song.artist == "Repeat Offender")
+    assert repeat_offender_count <= 2
+    assert any(song.artist == "Someone Else" for song in results)
+
+
+def test_recommend_with_k_zero_returns_empty_list():
+    rec = make_small_recommender()
+    user = UserProfile(
+        favorite_genre="pop",
+        favorite_mood="happy",
+        target_energy=0.8,
+        likes_acoustic=False,
+    )
+
+    results = rec.recommend(user, k=0)
+
+    assert results == []

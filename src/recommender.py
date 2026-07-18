@@ -15,6 +15,28 @@ def _normalize(value: str) -> str:
     return value.strip().lower()
 
 
+def _score_breakdown(
+    genre: str,
+    mood: str,
+    energy: float,
+    acousticness: float,
+    fav_genre: str,
+    fav_mood: str,
+    target_energy: float,
+    likes_acoustic: Optional[bool] = None,
+) -> Dict[str, float]:
+    """Each weighted scoring component for one song, keyed by name; the total score is their sum."""
+    breakdown = {
+        "genre": GENRE_WEIGHT if _normalize(genre) == _normalize(fav_genre) else 0.0,
+        "mood": MOOD_WEIGHT if _normalize(mood) == _normalize(fav_mood) else 0.0,
+        "energy": ENERGY_WEIGHT * (1 - abs(energy - target_energy)),
+    }
+    if likes_acoustic is not None:
+        acoustic_fit = acousticness if likes_acoustic else (1 - acousticness)
+        breakdown["acoustic"] = ACOUSTIC_WEIGHT * acoustic_fit
+    return breakdown
+
+
 def _score_song(
     genre: str,
     mood: str,
@@ -26,36 +48,37 @@ def _score_song(
     likes_acoustic: Optional[bool] = None,
 ) -> Tuple[float, List[str]]:
     """Scores one song against a user's preferences; shared by both the dict-based and dataclass-based paths."""
+    breakdown = _score_breakdown(
+        genre, mood, energy, acousticness, fav_genre, fav_mood, target_energy, likes_acoustic
+    )
     reasons = []
-    score = 0.0
 
-    if _normalize(genre) == _normalize(fav_genre):
-        score += GENRE_WEIGHT
+    if breakdown["genre"] > 0:
         reasons.append(f"genre '{genre}' matches your favorite")
 
-    if _normalize(mood) == _normalize(fav_mood):
-        score += MOOD_WEIGHT
+    if breakdown["mood"] > 0:
         reasons.append(f"mood '{mood}' fits what you're looking for")
 
     energy_closeness = 1 - abs(energy - target_energy)
-    score += ENERGY_WEIGHT * energy_closeness
     if energy_closeness > 0.85:
         reasons.append(f"energy ({energy:.2f}) is close to your target ({target_energy:.2f})")
 
     if likes_acoustic is not None:
         acoustic_fit = acousticness if likes_acoustic else (1 - acousticness)
-        score += ACOUSTIC_WEIGHT * acoustic_fit
         if acoustic_fit > 0.7:
             reasons.append("acoustic level fits your preference")
 
     if not reasons:
         reasons.append("closest overall match available")
 
-    return score, reasons
+    return sum(breakdown.values()), reasons
 
 
 def _select_diverse_top_k(scored: List, k: int, get_artist) -> List:
     """Picks the top k from an already-sorted list, capping how many can share the same artist."""
+    if k <= 0:
+        return []
+
     selected = []
     artist_counts = {}
     for item in scored:
@@ -160,6 +183,23 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     Required by recommend_songs() and src/main.py
     """
     return _score_song(
+        song["genre"],
+        song["mood"],
+        song["energy"],
+        song["acousticness"],
+        user_prefs["genre"],
+        user_prefs["mood"],
+        user_prefs["energy"],
+        user_prefs.get("likes_acoustic"),
+    )
+
+def score_breakdown(user_prefs: Dict, song: Dict) -> Dict[str, float]:
+    """
+    Returns each weighted scoring component (genre, mood, energy, and optionally
+    acoustic) for one song, so callers can display how its total score was built.
+    Required by src/main.py's breakdown display.
+    """
+    return _score_breakdown(
         song["genre"],
         song["mood"],
         song["energy"],
