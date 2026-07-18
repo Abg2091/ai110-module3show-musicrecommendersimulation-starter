@@ -25,10 +25,7 @@ def _score_song(
     target_energy: float,
     likes_acoustic: Optional[bool] = None,
 ) -> Tuple[float, List[str]]:
-    """
-    Shared scoring logic for both the dict-based and dataclass-based recommendation paths.
-    likes_acoustic=None means no acoustic preference was given, so that term is skipped.
-    """
+    """Scores one song against a user's preferences; shared by both the dict-based and dataclass-based paths."""
     reasons = []
     score = 0.0
 
@@ -58,12 +55,7 @@ def _score_song(
 
 
 def _select_diverse_top_k(scored: List, k: int, get_artist) -> List:
-    """
-    Picks the top k from a list already sorted descending by score, skipping any
-    song once its artist has reached MAX_SONGS_PER_ARTIST, so one prolific artist
-    can't crowd out the rest of the recommendations. This is ranking logic, not
-    scoring logic - it never changes any song's score, only which ones get shown.
-    """
+    """Picks the top k from an already-sorted list, capping how many can share the same artist."""
     selected = []
     artist_counts = {}
     for item in scored:

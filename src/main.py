@@ -13,7 +13,8 @@ from recommender import load_songs, recommend_songs
 
 
 def main() -> None:
-    songs = load_songs("data/songs.csv") 
+    """Loads the song catalog and prints the user profile alongside its top-k recommendations."""
+    songs = load_songs("data/songs.csv")
 
     # Starter example profile
     user_prefs = {"genre": "lofi", "mood": "chill", "energy": 0.6, "likes_acoustic": True}

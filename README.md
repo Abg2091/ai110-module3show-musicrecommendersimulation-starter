@@ -135,6 +135,27 @@ Top 5 Recommendations
 
 `````````````````````````````````````````````````````````````````````````````
 
+Commit Message for summary of implementation:
+
+Implement scoring and ranking for a working CLI-first recommender simulation
+
+- Add mood-first weighted scoring (_score_song) shared by both the
+  dict-based (score_song/recommend_songs) and dataclass-based
+  (Recommender) code paths, per the "match the moment" philosophy
+  (mood=2.0 > energy=1.5 > genre=1.0 = acousticness=1.0)
+- Add artist-diversity capped ranking (_select_diverse_top_k) so one
+  prolific artist can't crowd out the top-k results
+- Implement load_songs CSV parsing with numeric field casting
+- Normalize genre/mood string comparisons to avoid case/whitespace
+  mismatches
+- Expand the catalog to 23 songs for broader genre/mood/energy coverage
+- Reformat main.py's terminal output into a numbered, readable report
+  showing the user profile and each recommendation's score and reasons
+
+Running `python src/main.py` now demonstrates a fully working,
+CLI-first simulation of the recommender end to end.
+
+
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
 ---
