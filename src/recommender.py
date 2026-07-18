@@ -7,6 +7,13 @@ MOOD_WEIGHT = 2.0
 ENERGY_WEIGHT = 1.5
 ACOUSTIC_WEIGHT = 1.0
 
+MAX_SONGS_PER_ARTIST = 2
+
+
+def _normalize(value: str) -> str:
+    """Case/whitespace-insensitive comparison so 'R&B' vs 'r&b' still matches."""
+    return value.strip().lower()
+
 
 def _score_song(
     genre: str,
@@ -25,11 +32,11 @@ def _score_song(
     reasons = []
     score = 0.0
 
-    if genre == fav_genre:
+    if _normalize(genre) == _normalize(fav_genre):
         score += GENRE_WEIGHT
         reasons.append(f"genre '{genre}' matches your favorite")
 
-    if mood == fav_mood:
+    if _normalize(mood) == _normalize(fav_mood):
         score += MOOD_WEIGHT
         reasons.append(f"mood '{mood}' fits what you're looking for")
 
@@ -48,6 +55,26 @@ def _score_song(
         reasons.append("closest overall match available")
 
     return score, reasons
+
+
+def _select_diverse_top_k(scored: List, k: int, get_artist) -> List:
+    """
+    Picks the top k from a list already sorted descending by score, skipping any
+    song once its artist has reached MAX_SONGS_PER_ARTIST, so one prolific artist
+    can't crowd out the rest of the recommendations. This is ranking logic, not
+    scoring logic - it never changes any song's score, only which ones get shown.
+    """
+    selected = []
+    artist_counts = {}
+    for item in scored:
+        artist = get_artist(item)
+        if artist_counts.get(artist, 0) >= MAX_SONGS_PER_ARTIST:
+            continue
+        selected.append(item)
+        artist_counts[artist] = artist_counts.get(artist, 0) + 1
+        if len(selected) == k:
+            break
+    return selected
 
 @dataclass
 class Song:
@@ -103,7 +130,8 @@ class Recommender:
             for song in self.songs
         ]
         scored.sort(key=lambda pair: pair[0], reverse=True)
-        return [song for _, song in scored[:k]]
+        selected = _select_diverse_top_k(scored, k, get_artist=lambda pair: pair[1].artist)
+        return [song for _, song in selected]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         _, reasons = _score_song(
@@ -156,4 +184,5 @@ def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tup
     """
     scored = [(song, *score_song(user_prefs, song)) for song in songs]
     scored.sort(key=lambda triple: triple[1], reverse=True)
-    return [(song, score, "; ".join(reasons)) for song, score, reasons in scored[:k]]
+    selected = _select_diverse_top_k(scored, k, get_artist=lambda triple: triple[0]["artist"])
+    return [(song, score, "; ".join(reasons)) for song, score, reasons in selected]

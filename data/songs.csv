@@ -19,3 +19,6 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 18,Island Sway,Kalo Roots,reggae,playful,0.58,90,0.80,0.75,0.45
 19,Rainy Alley Blues,Delta Mo,blues,somber,0.30,65,0.35,0.30,0.75
 20,Hidden Frequencies,Vex Silo,techno,mysterious,0.78,130,0.40,0.80,0.05
+21,Half Light,Sable Lane,indie pop,relaxed,0.48,92,0.60,0.55,0.50
+22,Slow Burn Avenue,Cinder & Wale,R&B,moody,0.68,100,0.55,0.62,0.35
+23,Tidewalk,Coral Static,synthwave,focused,0.70,104,0.58,0.65,0.25

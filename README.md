@@ -42,6 +42,22 @@ A single score means nothing on its own. It only matters compared to every other
 
 You can include a simple diagram or bullet list if helpful.
 
+Design biases identified and their fixes:
+
+1. Rare-tag starvation: Some moods/genres only exist on one song, so users asking for those get almost no real choice. (not fixed — would need a bigger catalog or fuzzy mood matching)
+
+2. Typo/case sensitivity:"R&B" vs "r&b" would count as no match at all, even though they're the same thing. ✅ Fixed — comparisons now ignore case/spacing.
+
+3. Mood matters more than genre: A deliberate design choice, but it means genre-loyal users get less weight than mood-driven users. (not fixed — this is the philosophy we chose on purpose)
+
+4. Energy "dead zone": The catalog had almost no songs in the middle energy range, so anyone wanting medium energy got a poor match. ✅ Fixed — added 3 songs to fill that gap.
+
+5. Inconsistent acoustic preference: The demo profile wasn't actually passing the acoustic preference correctly, so that whole part of the score was silently doing nothing. ✅ Fixed — corrected so it now works as intended.
+
+6. Same-artist pileup — nothing stopped one artist from taking multiple spots in the top results. ✅ Fixed — recommendations now cap out at 2 songs per artist.
+
+Bottom line: Fixed the "silent bugs" (typos, the broken acoustic setting, one artist crowding the list) and improved the data (filled the energy gap). Left the two things that are really just design opinions — mood mattering more than genre, and rare tags being rare — since those are conscious trade-offs, not mistakes.
+
 ---
 
 ## Getting Started
