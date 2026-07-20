@@ -42,6 +42,23 @@ ADVERSARIAL_PROFILES = [
 ACOUSTIC_FENCE_SITTER_BASE = {"genre": "indie pop", "mood": "relaxed", "energy": 0.48}
 
 
+def _format_recommendations_table(user_prefs: dict, recommendations: list) -> str:
+    headers = ["#", "Title", "Artist", "Score", "Breakdown", "Reasons"]
+    rows = []
+    for rank, (song, score, explanation) in enumerate(recommendations, start=1):
+        breakdown = score_breakdown(user_prefs, song)
+        breakdown_str = ", ".join(f"{component}={value:+.2f}" for component, value in breakdown.items())
+        rows.append([str(rank), song["title"], song["artist"], f"{score:.2f}", breakdown_str, explanation])
+
+    widths = [max(len(row[i]) for row in [headers] + rows) for i in range(len(headers))]
+
+    def format_row(row):
+        return " | ".join(cell.ljust(width) for cell, width in zip(row, widths))
+
+    separator = "-+-".join("-" * w for w in widths)
+    return "\n".join([format_row(headers), separator] + [format_row(row) for row in rows])
+
+
 def _print_profile_and_recommendations(label: str, user_prefs: dict, songs: list, k: int = 5) -> None:
     recommendations = recommend_songs(user_prefs, songs, k=k)
 
@@ -52,14 +69,7 @@ def _print_profile_and_recommendations(label: str, user_prefs: dict, songs: list
 
     print(f"\nTop {len(recommendations)} Recommendations")
     print("-" * 40)
-
-    for rank, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"\n{rank}. {song['title']} ({song['artist']}) - Score: {score:.2f}")
-        breakdown = score_breakdown(user_prefs, song)
-        breakdown_str = ", ".join(f"{component}={value:+.2f}" for component, value in breakdown.items())
-        print(f"   Breakdown: {breakdown_str}")
-        for reason in explanation.split("; "):
-            print(f"   - {reason}")
+    print(_format_recommendations_table(user_prefs, recommendations))
 
 
 def main() -> None:
