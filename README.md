@@ -410,6 +410,308 @@ Top 5 Recommendations
 Use this section to document the experiments you ran. For example:
 
 - What happened when you changed the weight on genre from 2.0 to 0.5
+
+Terminal Output after chnaging the weights: 
+
+User Profile
+========================================
+genre: lofi
+mood: chill
+energy: 0.6
+likes_acoustic: True
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Midnight Coding (LoRoom) - Score: 5.67
+   Breakdown: genre=+0.50, mood=+2.00, energy=+2.46, acoustic=+0.71
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+2. Library Rain (Paper Lanterns) - Score: 5.61
+   Breakdown: genre=+0.50, mood=+2.00, energy=+2.25, acoustic=+0.86
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+3. Spacewalk Thoughts (Orbit Bloom) - Score: 4.96
+   Breakdown: genre=+0.00, mood=+2.00, energy=+2.04, acoustic=+0.92
+   - mood 'chill' fits what you're looking for
+   - acoustic level fits your preference
+
+4. Focus Flow (LoRoom) - Score: 3.68
+   Breakdown: genre=+0.50, mood=+0.00, energy=+2.40, acoustic=+0.78
+   - genre 'lofi' matches your favorite
+   - acoustic level fits your preference
+
+5. Dirt Road Sunrise (Hazel County) - Score: 3.54
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.94, acoustic=+0.60
+   - energy (0.62) is close to your target (0.60)
+
+
+########################################
+Adversarial / Edge-Case Profiles
+########################################
+
+Conflicting mood vs. energy (wants melancholic AND high-energy)
+========================================
+genre: classical
+mood: melancholic
+energy: 0.9
+likes_acoustic: True
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Winter Sonata (Aria Wren) - Score: 4.35
+   Breakdown: genre=+0.50, mood=+2.00, energy=+0.90, acoustic=+0.95
+   - genre 'classical' matches your favorite
+   - mood 'melancholic' fits what you're looking for
+   - acoustic level fits your preference
+
+2. Storm Runner (Voltline) - Score: 3.07
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.97, acoustic=+0.10
+   - energy (0.91) is close to your target (0.90)
+
+3. Gym Hero (Max Pulse) - Score: 2.96
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.91, acoustic=+0.05
+   - energy (0.93) is close to your target (0.90)
+
+4. Sunrise City (Neon Echo) - Score: 2.94
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.76, acoustic=+0.18
+   - energy (0.82) is close to your target (0.90)
+
+5. Rooftop Lights (Indigo Parade) - Score: 2.93
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.58, acoustic=+0.35
+   - energy (0.76) is close to your target (0.90)
+
+Genre & mood that don't exist in the catalog at all
+========================================
+genre: opera
+mood: furious
+energy: 0.5
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Half Light (Sable Lane) - Score: 2.94
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.94
+   - energy (0.48) is close to your target (0.50)
+
+2. Velvet Whisper (Marlo Reyes) - Score: 2.85
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.85
+   - energy (0.55) is close to your target (0.50)
+
+3. Island Sway (Kalo Roots) - Score: 2.76
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.76
+   - energy (0.58) is close to your target (0.50)
+
+4. Midnight Coding (LoRoom) - Score: 2.76
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.76
+   - energy (0.42) is close to your target (0.50)
+
+5. Focus Flow (LoRoom) - Score: 2.70
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.70
+   - energy (0.40) is close to your target (0.50)
+
+Out-of-range target energy (1.4, above the natural 0-1 scale)
+========================================
+genre: techno
+mood: mysterious
+energy: 1.4
+likes_acoustic: False
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Hidden Frequencies (Vex Silo) - Score: 4.59
+   Breakdown: genre=+0.50, mood=+2.00, energy=+1.14, acoustic=+0.95
+   - genre 'techno' matches your favorite
+   - mood 'mysterious' fits what you're looking for
+   - acoustic level fits your preference
+
+2. Iron Verdict (Grave Circuit) - Score: 2.68
+   Breakdown: genre=+0.00, mood=+0.00, energy=+1.71, acoustic=+0.97
+   - acoustic level fits your preference
+
+3. Pulse Ignition (DJ Kinetic) - Score: 2.63
+   Breakdown: genre=+0.00, mood=+0.00, energy=+1.65, acoustic=+0.98
+   - acoustic level fits your preference
+
+4. Gym Hero (Max Pulse) - Score: 2.54
+   Breakdown: genre=+0.00, mood=+0.00, energy=+1.59, acoustic=+0.95
+   - acoustic level fits your preference
+
+5. Storm Runner (Voltline) - Score: 2.43
+   Breakdown: genre=+0.00, mood=+0.00, energy=+1.53, acoustic=+0.90
+   - acoustic level fits your preference
+
+Messy case/whitespace in genre & mood
+========================================
+genre:   PoP 
+mood: HAPPY
+energy: 0.8
+likes_acoustic: None
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Sunrise City (Neon Echo) - Score: 5.44
+   Breakdown: genre=+0.50, mood=+2.00, energy=+2.94
+   - genre 'pop' matches your favorite
+   - mood 'happy' fits what you're looking for
+   - energy (0.82) is close to your target (0.80)
+
+2. Rooftop Lights (Indigo Parade) - Score: 4.88
+   Breakdown: genre=+0.00, mood=+2.00, energy=+2.88
+   - mood 'happy' fits what you're looking for
+   - energy (0.76) is close to your target (0.80)
+
+3. Gym Hero (Max Pulse) - Score: 3.11
+   Breakdown: genre=+0.50, mood=+0.00, energy=+2.61
+   - genre 'pop' matches your favorite
+   - energy (0.93) is close to your target (0.80)
+
+4. Crown Up (Big Mecca) - Score: 3.00
+   Breakdown: genre=+0.00, mood=+0.00, energy=+3.00
+   - energy (0.80) is close to your target (0.80)
+
+5. Hidden Frequencies (Vex Silo) - Score: 2.94
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.94
+   - energy (0.78) is close to your target (0.80)
+
+Artist-loyalty overload (LoRoom dominates lofi/chill matches)
+========================================
+genre: lofi
+mood: chill
+energy: 0.4
+likes_acoustic: True
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Library Rain (Paper Lanterns) - Score: 6.21
+   Breakdown: genre=+0.50, mood=+2.00, energy=+2.85, acoustic=+0.86
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - energy (0.35) is close to your target (0.40)
+   - acoustic level fits your preference
+
+2. Midnight Coding (LoRoom) - Score: 6.15
+   Breakdown: genre=+0.50, mood=+2.00, energy=+2.94, acoustic=+0.71
+   - genre 'lofi' matches your favorite
+   - mood 'chill' fits what you're looking for
+   - energy (0.42) is close to your target (0.40)
+   - acoustic level fits your preference
+
+3. Spacewalk Thoughts (Orbit Bloom) - Score: 5.56
+   Breakdown: genre=+0.00, mood=+2.00, energy=+2.64, acoustic=+0.92
+   - mood 'chill' fits what you're looking for
+   - energy (0.28) is close to your target (0.40)
+   - acoustic level fits your preference
+
+4. Focus Flow (LoRoom) - Score: 4.28
+   Breakdown: genre=+0.50, mood=+0.00, energy=+3.00, acoustic=+0.78
+   - genre 'lofi' matches your favorite
+   - energy (0.40) is close to your target (0.40)
+   - acoustic level fits your preference
+
+5. Coffee Shop Stories (Slow Stereo) - Score: 3.80
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.91, acoustic=+0.89
+   - energy (0.37) is close to your target (0.40)
+   - acoustic level fits your preference
+
+Acoustic fence-sitter comparison (likes_acoustic=True vs. False)
+========================================
+
+likes_acoustic=True
+========================================
+genre: indie pop
+mood: relaxed
+energy: 0.48
+likes_acoustic: True
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Half Light (Sable Lane) - Score: 6.00
+   Breakdown: genre=+0.50, mood=+2.00, energy=+3.00, acoustic=+0.50
+   - genre 'indie pop' matches your favorite
+   - mood 'relaxed' fits what you're looking for
+   - energy (0.48) is close to your target (0.48)
+
+2. Coffee Shop Stories (Slow Stereo) - Score: 5.56
+   Breakdown: genre=+0.00, mood=+2.00, energy=+2.67, acoustic=+0.89
+   - mood 'relaxed' fits what you're looking for
+   - energy (0.37) is close to your target (0.48)
+   - acoustic level fits your preference
+
+3. Focus Flow (LoRoom) - Score: 3.54
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.76, acoustic=+0.78
+   - energy (0.40) is close to your target (0.48)
+   - acoustic level fits your preference
+
+4. Midnight Coding (LoRoom) - Score: 3.53
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.82, acoustic=+0.71
+   - energy (0.42) is close to your target (0.48)
+   - acoustic level fits your preference
+
+5. Library Rain (Paper Lanterns) - Score: 3.47
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.61, acoustic=+0.86
+   - energy (0.35) is close to your target (0.48)
+   - acoustic level fits your preference
+
+likes_acoustic=False
+========================================
+genre: indie pop
+mood: relaxed
+energy: 0.48
+likes_acoustic: False
+
+Top 5 Recommendations
+----------------------------------------
+
+1. Half Light (Sable Lane) - Score: 6.00
+   Breakdown: genre=+0.50, mood=+2.00, energy=+3.00, acoustic=+0.50
+   - genre 'indie pop' matches your favorite
+   - mood 'relaxed' fits what you're looking for
+   - energy (0.48) is close to your target (0.48)
+
+2. Coffee Shop Stories (Slow Stereo) - Score: 4.78
+   Breakdown: genre=+0.00, mood=+2.00, energy=+2.67, acoustic=+0.11
+   - mood 'relaxed' fits what you're looking for
+   - energy (0.37) is close to your target (0.48)
+
+3. Velvet Whisper (Marlo Reyes) - Score: 3.49
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.79, acoustic=+0.70
+   - energy (0.55) is close to your target (0.48)
+
+4. Rooftop Lights (Indigo Parade) - Score: 3.31
+   Breakdown: genre=+0.50, mood=+0.00, energy=+2.16, acoustic=+0.65
+   - genre 'indie pop' matches your favorite
+
+5. Island Sway (Kalo Roots) - Score: 3.25
+   Breakdown: genre=+0.00, mood=+0.00, energy=+2.70, acoustic=+0.55
+   - energy (0.58) is close to your target (0.48)
+
+
+Before vs. After: what changed when energy started counting for more and genre for less
+
+The two knobs: matching the user's exact genre used to add 1.0 point, now it only adds 0.5. Meanwhile, matching the target "energy level" (how upbeat vs. mellow a song feels) used to add up to 1.5 points, and now it can add up to 3.0 — twice as much muscle.
+
+What actually happened in the results above:
+
+When a song already nailed both genre AND mood, nothing dethroned it. Winter Sonata (classical/melancholic), Hidden Frequencies (techno/mysterious), and Half Light (indie pop/relaxed) all stayed in 1st place before and after. A double exact-match is still hard to beat even with genre weakened, because mood alone is still worth 2 points.
+
+Songs that only matched on genre (not mood) got shakier. In the "acoustic fence-sitter" test, Rooftop Lights held 3rd place before purely on its genre match. After the change, that genre match was worth less, and it got bumped out of the top spots by songs like Focus Flow, Midnight Coding, and Velvet Whisper — songs with no genre match at all, but whose energy level was simply closer to what the user asked for. In plain terms: being "close to the right vibe" now beats being "the right genre" more often than it used to.
+
+When nothing matched genre or mood anyway, the whole list just got bigger scores, same order. In the "made-up genre/mood" test (opera/furious) and the "messy case" test (PoP/HAPPY), scores roughly doubled across the board, but the ranking of songs didn't move at all — because every song there was competing purely on energy, so everyone got the same boost.
+
+The biggest shake-up was the deliberately "confused" profile (wants a sad, quiet mood and a high-energy song at the same time). Before, a few in-between songs (Dirt Road Sunrise, Coffee Shop Stories) squeaked into the top 5 on modest overall scores. After the change, they got pushed out entirely, replaced by loud, high-energy tracks (Storm Runner, Gym Hero, Sunrise City) that don't fit the mood at all but happen to match the energy target almost exactly. This is the clearest sign of the shift: when genre/mood can't settle the argument, energy now wins the tie-break much more decisively.
+
+Bottom line: the system got more "vibe-driven" and less "genre-loyal." If two songs are otherwise close, the one that feels like the right energy level now has a much better shot at winning, even over one that's technically the right genre. That's good if users care more about mood/energy than genre labels — but it means genre fans (e.g., someone who specifically wants jazz) will more easily see off-genre songs creep into their recommendations if those songs happen to have the right energy.
+
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
